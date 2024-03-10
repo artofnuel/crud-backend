@@ -30,7 +30,11 @@ router.post("/", (req, res) => {
 
   users.push({ ...user, id: uuidv4() });
 
-  res.send(`User with the name ${user.first_name} added to the database!`);
+  res.send(
+    `User with the name ${user.first_name} added to the database! ${console.log(
+      user
+    )}`
+  );
 });
 
 // Lets find specific Users in the Mock DB
