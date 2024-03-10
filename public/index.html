@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>User Management</title>
+    <style>
+      /* Basic styling */
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+      body {
+        background-color: #151423;
+        color: aliceblue;
+        width: 100%;
+        min-height: 100vh;
+        font-family: Arial, sans-serif;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+      }
+      form {
+        margin-bottom: 20px;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        gap: 5px;
+      }
+      input[type="text"],
+      input[type="email"] {
+        margin-bottom: 10px;
+        padding: 10px;
+        width: 200px;
+        border-radius: 50px;
+        border: none;
+      }
+      button {
+        padding: 10px 30px;
+        cursor: pointer;
+        border-radius: 50px;
+        border: none;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>User Management</h1>
+
+    <!-- Form for adding users -->
+    <h2>Add User</h2>
+    <form id="addUserForm">
+      <input type="text" name="first_name" placeholder="First Name" required />
+      <input type="text" name="last_name" placeholder="Last Name" required />
+      <input type="email" name="email" placeholder="Email" required />
+      <button type="submit">Add User</button>
+    </form>
+
+    <!-- Container to display users -->
+    <h2>Users</h2>
+    <ul id="userList"></ul>
+
+    <script>
+      // Function to fetch users from the backend API and display them
+      async function fetchUsers() {
+        const response = await fetch("/users");
+        const users = await response.json();
+        const userList = document.getElementById("userList");
+        userList.innerHTML = "";
+        users.forEach((user) => {
+          const li = document.createElement("li");
+          li.textContent = `${user.first_name} ${user.last_name} - ${user.email}`;
+          userList.appendChild(li);
+        });
+      }
+
+      // Function to handle form submission for adding users
+      // Function to handle form submission for adding users
+      async function addUser(event) {
+        event.preventDefault();
+        const form = event.target;
+        const formData = new FormData(form);
+
+        console.log("Form data:", formData); // Log form data to see if it's populated correctly
+
+        const userData = {};
+        formData.forEach((value, key) => {
+          userData[key] = value;
+        });
+
+        console.log("User data:", userData); // Log user data to see if it's constructed correctly
+
+        const response = await fetch("/users", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(userData),
+        });
+
+        const result = await response.text();
+        alert(result);
+        fetchUsers(); // Refresh the user list after adding
+        form.reset();
+      }
+
+      // Attach event listener to the add user form
+      document
+        .getElementById("addUserForm")
+        .addEventListener("submit", addUser);
+
+      // Fetch users when the page loads
+      fetchUsers();
+    </script>
+  </body>
+</html>
