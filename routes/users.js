@@ -46,11 +46,14 @@ router.get("/:id", (req, res) => {
 router.delete("/:id", (req, res) => {
   const { id } = req.params;
 
-  users = users.filter((user) => user.id !== id);
+  const userIndex = users.findIndex((user) => user.id === id);
 
-  const { first_name } = users.find((user) => user.id === id);
-
-  res.send(`${id} deleted successfully from database`);
+  if (userIndex !== -1) {
+    const deletedUser = users.splice(userIndex, 1)[0];
+    res.send(`${deletedUser.id} deleted successfully from database`);
+  } else {
+    res.status(404).send(`User with id ${id} not found`);
+  }
 });
 
 // Lets update Users in the Mock DB
